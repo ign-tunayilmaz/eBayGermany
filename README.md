@@ -28,6 +28,17 @@ npm run build
 npm run preview
 ```
 
+## GitHub Pages
+
+The app is built for the path `/eBayGermany/`. To avoid a white screen and 404 for `main.tsx`:
+
+1. **Settings → Pages** in this repo.
+2. Under **Build and deployment**, set **Source** to **"GitHub Actions"** (not "Deploy from a branch").
+3. Push to `main`; the workflow will build and deploy. Then open:
+   **https://ign-tunayilmaz.github.io/eBayGermany/**
+
+If you see a 404 for `/src/main.tsx`, the site is being served from the source branch instead of the built artifact — set Source to **GitHub Actions** as above.
+
 ## Stack
 
 - React 18 + TypeScript
