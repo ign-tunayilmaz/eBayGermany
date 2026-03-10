@@ -25,7 +25,7 @@ const ModerationToolGermany = () => {
   });
 
   const [adminNoteInputs, setAdminNoteInputs] = useState({
-    edited: { link: '', removed: '', violation: '' },
+    edited: { link: '', violation: '' },
     removed: { link: '', violation: '' }
   });
 
@@ -36,7 +36,7 @@ const ModerationToolGermany = () => {
     banCombined: { banPeriod: '1 Day', reasoning: '', username: '', email: '', ip: '', spamUrl: '', startDate: '' }
   };
   const defaultAdminNoteInputs = {
-    edited: { link: '', removed: '', violation: '' },
+    edited: { link: '', violation: '' },
     removed: { link: '', violation: '' }
   };
 
@@ -140,7 +140,7 @@ const ModerationToolGermany = () => {
     { id: 'bullying', name: 'Bullying Reply', content: templates.bullying },
     { id: 'giftCardScam', name: 'Gift Card Scam', content: templates.giftCardScam },
     { id: 'csRedirect', name: 'CS Redirect', content: templates.csRedirect, isDynamic: true, type: 'username' },
-    ...(['gg01','gg02','gg03','gg04','gg05','sg00','sg01','sg02','sg03','sg04','sg05','sg06','sg07','sg08','sg09','sg10','sg11','sg12'] as const).map(id => ({ id, name: id.toUpperCase() + ': ' + templates[id].substring(0, 30), content: templates[id] }))
+    ...(['gg01','gg05','sg02','sg04','sg05','sg08','sg09','sg10','sg11','gg02','gg03','gg04','sg00','sg01','sg03','sg06','sg07','sg12'] as const).map(id => ({ id, name: id.toUpperCase() + ': ' + templates[id].substring(0, 30), content: templates[id] }))
   ];
 
   const copy = async (text: string, id: string) => {
@@ -217,17 +217,17 @@ const ModerationToolGermany = () => {
     else if (noteId === 'removed') setAdminNoteInputs(prev => ({ ...prev, removed: { ...prev.removed, [field]: value } }));
   };
   const clearAdminNotes = (noteId: string) => {
-    if (noteId === 'edited') setAdminNoteInputs(prev => ({ ...prev, edited: { link: '', removed: '', violation: '' } }));
+    if (noteId === 'edited') setAdminNoteInputs(prev => ({ ...prev, edited: { link: '', violation: '' } }));
     else if (noteId === 'removed') setAdminNoteInputs(prev => ({ ...prev, removed: { link: '', violation: '' } }));
   };
   const getAdminNote = (noteId: string): string => {
     if (noteId === 'edited') {
       const i = adminNoteInputs.edited;
-      return '<a href="' + (i.link || '[link]') + '">Edited Post</a> to remove "' + (i.removed || '[removed]') + '".<br>\nSent user a friendly PM for: ' + (i.violation || '[violation]');
+      return 'Beitrag bearbeitet (' + (i.violation || '[violation]') + ') PN gesendet. <a href="' + (i.link || '[URL]') + '">Beitrag</a>';
     }
     if (noteId === 'removed') {
       const i = adminNoteInputs.removed;
-      return '<a href="' + (i.link || '[link]') + '">Removed Post</a><br>\nSent user a friendly PM for: ' + (i.violation || '[violation]');
+      return 'Beitrag entfernt (' + (i.violation || '[violation]') + ') PN gesendet. <a href="' + (i.link || '[URL]') + '">Beitrag</a>';
     }
     return '';
   };
@@ -237,7 +237,7 @@ const ModerationToolGermany = () => {
       setAdminNoteInputs(prev => ({ ...prev, removed: { link: i.topicUrl || prev.removed.link, violation: i.grundsatz || '' } }));
       alert('Copied to Removed Post admin notes!');
     } else if (templateId === 'editPost') {
-      setAdminNoteInputs(prev => ({ ...prev, edited: { link: i.topicUrl || prev.edited.link, removed: i.beitrag || '', violation: i.grundsatz || '' } }));
+      setAdminNoteInputs(prev => ({ ...prev, edited: { link: i.topicUrl || prev.edited.link, violation: i.grundsatz || '' } }));
       alert('Copied to Edited Post admin notes!');
     }
   };
@@ -284,6 +284,7 @@ const ModerationToolGermany = () => {
     setShiftStartTime(new Date());
     setShiftRunning(true);
   };
+  const resumeShift = () => setShiftRunning(true);
   const stopShift = () => setShiftRunning(false);
   const resetShift = () => { setShiftRunning(false); setShiftSeconds(0); setShiftStartTime(null); };
 
@@ -357,7 +358,7 @@ const ModerationToolGermany = () => {
                 <button onClick={stopShift} className="px-4 py-2 bg-yellow-500 hover:bg-yellow-600 text-white rounded-lg font-semibold text-sm">Pause</button>
               )}
               {!shiftRunning && shiftSeconds > 0 && (
-                <button onClick={startShift} className="px-4 py-2 bg-green-600 hover:bg-green-700 text-white rounded-lg font-semibold text-sm">Resume</button>
+                <button onClick={resumeShift} className="px-4 py-2 bg-green-600 hover:bg-green-700 text-white rounded-lg font-semibold text-sm">Resume</button>
               )}
               {shiftSeconds > 0 && (
                 <button onClick={resetShift} className={`px-4 py-2 rounded-lg font-semibold text-sm ${darkMode ? 'bg-slate-700 hover:bg-slate-600 text-slate-200' : 'bg-slate-200 hover:bg-slate-300 text-slate-700'}`}>Reset</button>
@@ -416,7 +417,9 @@ const ModerationToolGermany = () => {
                   const isCustomized = !!customTemplates[t.id];
                   const pop = t.isDynamic ? getPopulated(t.id, currentContent) : currentContent;
                   return (
-                    <div key={t.id} className={`border rounded-lg overflow-hidden ${border}`}>
+                    <div key={t.id}>
+                    {t.id === 'gg01' && <div className={`my-4 border-t-2 ${darkMode ? 'border-slate-600' : 'border-slate-300'}`}><span className={`text-xs font-semibold uppercase tracking-wide ${text2} relative -top-2.5 ${darkMode ? 'bg-slate-800' : 'bg-white'} px-2`}>Guidelines & Rules</span></div>}
+                    <div className={`border rounded-lg overflow-hidden ${border}`}>
                       {/* Header row */}
                       <div className={`${darkMode ? 'bg-slate-700' : 'bg-slate-100'} px-3 py-2 flex items-center justify-between border-b ${border}`}>
                         <div className="flex items-center gap-2">
@@ -490,6 +493,7 @@ const ModerationToolGermany = () => {
                         </>
                       )}
                     </div>
+                    </div>
                   );
                 })}
               </div>
@@ -500,7 +504,7 @@ const ModerationToolGermany = () => {
             const removed = adminNoteInputs?.removed ?? defaultAdminNoteInputs.removed;
             return (
             <div className={`space-y-6 pt-3 border-t ${border}`}>
-              {[{ id: 'edited' as const, title: 'Edited Post', data: edited }, { id: 'removed' as const, title: 'Removed Post', data: removed }].map(n => (
+              {[{ id: 'edited' as const, title: 'Beitrag bearbeitet', data: edited }, { id: 'removed' as const, title: 'Beitrag entfernt', data: removed }].map(n => (
                 <div key={n.id}>
                   <div className="flex items-center justify-between mb-3">
                     <h4 className={`text-sm font-semibold ${text1}`}>{n.title}</h4>
@@ -511,7 +515,6 @@ const ModerationToolGermany = () => {
                   </div>
                   <div className="space-y-2">
                     <input type="text" placeholder="Link to post" value={n.data.link ?? ''} onChange={(e) => updateAdminNote(n.id, 'link', e.target.value)} className={`w-full px-3 py-2 text-sm border rounded ${darkMode ? 'bg-slate-900 border-slate-700 text-slate-200 placeholder-slate-500' : 'bg-white border-slate-300'}`} />
-                    {n.id === 'edited' && <input type="text" placeholder="Removed portion" value={n.data.removed ?? ''} onChange={(e) => updateAdminNote(n.id, 'removed', e.target.value)} className={`w-full px-3 py-2 text-sm border rounded ${darkMode ? 'bg-slate-900 border-slate-700 text-slate-200 placeholder-slate-500' : 'bg-white border-slate-300'}`} />}
                     <input type="text" placeholder="Rule violation" value={n.data.violation ?? ''} onChange={(e) => updateAdminNote(n.id, 'violation', e.target.value)} className={`w-full px-3 py-2 text-sm border rounded ${darkMode ? 'bg-slate-900 border-slate-700 text-slate-200 placeholder-slate-500' : 'bg-white border-slate-300'}`} />
                     <div className={`rounded-lg p-3 border ${darkMode ? 'bg-slate-900 border-slate-700' : 'bg-slate-50 border-slate-200'}`}><pre className={`text-xs whitespace-pre-wrap font-mono ${text2}`}>{getAdminNote(n.id)}</pre></div>
                   </div>
