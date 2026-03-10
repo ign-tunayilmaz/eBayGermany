@@ -164,17 +164,8 @@ const ModerationToolGermany = () => {
   };
 
   const templateList: TemplateItem[] = [
-    { id: 'removedByMod', name: 'Removed by Moderator', content: '[Vom Moderator entfernt]' },
     { id: 'removePost', name: 'Remove Post', content: templates.removePost, isDynamic: true, type: 'removePost' },
     { id: 'editPost', name: 'Edit Post', content: templates.editPost, isDynamic: true, type: 'removePost' },
-    { id: 'necroThread', name: 'Locking: Necro Thread', content: templates.necroThread },
-    { id: 'opRequest', name: 'Locking: OP Request', content: templates.opRequest },
-    { id: 'lockingOffTopic', name: 'Locking: Off Topic', content: templates.lockingOffTopic },
-    { id: 'heatedDiscussion', name: 'Steering: Heated Discussion', content: templates.heatedDiscussion },
-    { id: 'offTopic', name: 'Steering: Off Topic', content: templates.offTopic },
-    { id: 'bullying', name: 'Bullying Reply', content: templates.bullying },
-    { id: 'giftCardScam', name: 'Gift Card Scam', content: templates.giftCardScam },
-    { id: 'csRedirect', name: 'CS Redirect', content: templates.csRedirect, isDynamic: true, type: 'username' },
     ...(['gg01','gg05','sg02','sg04','sg05','sg08','sg09','sg10','sg11','gg02','gg03','gg04','sg00','sg01','sg03','sg06','sg07','sg12'] as const).map(id => ({ id, name: id.toUpperCase() + ': ' + templates[id].substring(0, 30), content: templates[id] }))
   ];
 
