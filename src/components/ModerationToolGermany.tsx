@@ -28,6 +28,8 @@ const ModerationToolGermany = () => {
     edited: { link: '', violation: '' },
     removed: { link: '', violation: '' }
   });
+  const [customViolation, setCustomViolation] = useState<Record<string, boolean>>({});
+  const [customGrundsatz, setCustomGrundsatz] = useState<Record<string, boolean>>({});
 
   const defaultTemplateInputs = {
     removePost: { name: '', topicUrl: '', topic: '', grundsatz: '', beitrag: '' },
@@ -120,6 +122,38 @@ const ModerationToolGermany = () => {
   };
   // ──────────────────────────────────────────────────────────────────────────
 
+  const violationOptions = [
+    { value: '', label: 'Select a violation...' },
+    { value: 'GG01: ' + templates.gg01, label: 'GG01: ' + templates.gg01 },
+    { value: 'GG02: ' + templates.gg02, label: 'GG02: ' + templates.gg02 },
+    { value: 'GG03: ' + templates.gg03, label: 'GG03: ' + templates.gg03.substring(0, 50) + '...' },
+    { value: 'GG04: ' + templates.gg04, label: 'GG04: ' + templates.gg04.substring(0, 50) + '...' },
+    { value: 'GG05: ' + templates.gg05, label: 'GG05: ' + templates.gg05.substring(0, 50) + '...' },
+    { value: 'SG00: ' + templates.sg00, label: 'SG00: ' + templates.sg00.substring(0, 50) + '...' },
+    { value: 'SG01: ' + templates.sg01, label: 'SG01: ' + templates.sg01.substring(0, 50) + '...' },
+    { value: 'SG02: ' + templates.sg02, label: 'SG02: ' + templates.sg02.substring(0, 50) + '...' },
+    { value: 'SG03: ' + templates.sg03, label: 'SG03: ' + templates.sg03.substring(0, 50) + '...' },
+    { value: 'SG04: ' + templates.sg04, label: 'SG04: ' + templates.sg04.substring(0, 50) + '...' },
+    { value: 'SG05: ' + templates.sg05, label: 'SG05: ' + templates.sg05.substring(0, 50) + '...' },
+    { value: 'SG06: ' + templates.sg06, label: 'SG06: ' + templates.sg06.substring(0, 50) + '...' },
+    { value: 'SG07: ' + templates.sg07, label: 'SG07: ' + templates.sg07.substring(0, 50) + '...' },
+    { value: 'SG08: ' + templates.sg08, label: 'SG08: ' + templates.sg08.substring(0, 50) + '...' },
+    { value: 'SG09: ' + templates.sg09, label: 'SG09: ' + templates.sg09.substring(0, 50) + '...' },
+    { value: 'SG10: ' + templates.sg10, label: 'SG10: ' + templates.sg10.substring(0, 50) + '...' },
+    { value: 'SG11: ' + templates.sg11, label: 'SG11: ' + templates.sg11.substring(0, 50) + '...' },
+    { value: 'SG12: ' + templates.sg12, label: 'SG12: ' + templates.sg12.substring(0, 50) + '...' },
+    { value: '__custom__', label: 'Custom...' },
+  ];
+
+  const grundsatzOptions = [
+    { value: '', label: 'Select a guideline...' },
+    ...(['gg01','gg02','gg03','gg04','gg05','sg00','sg01','sg02','sg03','sg04','sg05','sg06','sg07','sg08','sg09','sg10','sg11','sg12'] as const).map(id => ({
+      value: templates[id],
+      label: id.toUpperCase() + ': ' + templates[id].substring(0, 60) + (templates[id].length > 60 ? '...' : ''),
+    })),
+    { value: '__custom__', label: 'Custom...' },
+  ];
+
   type TemplateItem = {
     id: string;
     name: string;
@@ -176,7 +210,10 @@ const ModerationToolGermany = () => {
       csRedirect: { username: '' },
       banCombined: { banPeriod: '1 Day', reasoning: '', username: '', email: '', ip: '', spamUrl: '', startDate: '' }
     };
-    if (defaults[templateId]) setTemplateInputs(prev => ({ ...prev, [templateId]: defaults[templateId] }));
+    if (defaults[templateId]) {
+      setTemplateInputs(prev => ({ ...prev, [templateId]: defaults[templateId] }));
+      setCustomGrundsatz(prev => ({ ...prev, [templateId]: false }));
+    }
   };
 
   const getPopulated = (templateId: string, base: string): string => {
@@ -199,7 +236,7 @@ const ModerationToolGermany = () => {
         'Username: ' + (i.username || '[Username]') + '\n' +
         'Email: ' + (i.email || '[Email]') + '\n' +
         'IP: ' + (i.ip || '[IP]') + '\n' +
-        'Spam URL: ' + (i.spamUrl || '[URL]') + '\n' +
+        'Relevant Post URL: ' + (i.spamUrl || '[URL]') + '\n' +
         'Start Date: ' + (i.startDate || '[DATE]') + '\n' +
         'Ban Length: ' + len +
         '\n\n---\n\n' +
@@ -219,6 +256,7 @@ const ModerationToolGermany = () => {
   const clearAdminNotes = (noteId: string) => {
     if (noteId === 'edited') setAdminNoteInputs(prev => ({ ...prev, edited: { link: '', violation: '' } }));
     else if (noteId === 'removed') setAdminNoteInputs(prev => ({ ...prev, removed: { link: '', violation: '' } }));
+    setCustomViolation(prev => ({ ...prev, [noteId]: false }));
   };
   const getAdminNote = (noteId: string): string => {
     if (noteId === 'edited') {
@@ -397,7 +435,7 @@ const ModerationToolGermany = () => {
                   {banPeriods.map(p => <option key={p} value={p}>{p}</option>)}
                 </select>
                 <textarea placeholder="Reasoning" value={ban.reasoning ?? ''} onChange={(e) => updateInput('banCombined', 'reasoning', e.target.value)} rows={3} className={`w-full px-3 py-2 text-sm border rounded ${darkMode ? 'bg-slate-800 border-slate-700 text-slate-200 placeholder-slate-500' : 'bg-white border-slate-300'}`} />
-                {[{ f: 'username', label: 'Username' }, { f: 'email', label: 'Email' }, { f: 'ip', label: 'IP' }, { f: 'spamUrl', label: 'Spam URL' }].map(({ f, label }) => (
+                {[{ f: 'username', label: 'Username' }, { f: 'email', label: 'Email' }, { f: 'ip', label: 'IP' }, { f: 'spamUrl', label: 'Relevant Post URL' }].map(({ f, label }) => (
                   <input key={f} type="text" placeholder={label} value={ban[f as keyof typeof ban] ?? ''} onChange={(e) => updateInput('banCombined', f, e.target.value)} className={`w-full px-3 py-2 text-sm border rounded ${darkMode ? 'bg-slate-800 border-slate-700 text-slate-200 placeholder-slate-500' : 'bg-white border-slate-300'}`} />
                 ))}
                 <input type="date" value={ban.startDate ?? ''} onChange={(e) => updateInput('banCombined', 'startDate', e.target.value)} className={`w-full px-3 py-2 text-sm border rounded ${darkMode ? 'bg-slate-800 border-slate-700 text-slate-200' : 'bg-white border-slate-300'}`} />
@@ -408,7 +446,12 @@ const ModerationToolGermany = () => {
           }},
           { key: 'templates', title: 'Additional Templates', render: () => (
             <>
-              <div className="mb-3"><input type="text" placeholder="Search templates..." value={templateSearch} onChange={(e) => setTemplateSearch(e.target.value)} className={`w-full px-3 py-2 text-sm border rounded ${darkMode ? 'bg-slate-900 border-slate-700 text-slate-200 placeholder-slate-500' : 'bg-white border-slate-300'}`} /></div>
+              <div className="mb-3 flex gap-2">
+                <input type="text" placeholder="Search templates..." value={templateSearch} onChange={(e) => setTemplateSearch(e.target.value)} className={`flex-1 px-3 py-2 text-sm border rounded ${darkMode ? 'bg-slate-900 border-slate-700 text-slate-200 placeholder-slate-500' : 'bg-white border-slate-300'}`} />
+                {Object.values(expandedTemplates).some(v => v) && (
+                  <button onClick={() => setExpandedTemplates({})} className={`px-3 py-2 rounded text-xs font-medium whitespace-nowrap ${darkMode ? 'bg-slate-700 hover:bg-slate-600 text-slate-200' : 'bg-slate-200 hover:bg-slate-300 text-slate-700'}`}>Collapse All</button>
+                )}
+              </div>
               <div className="space-y-2">
                 {templateList.filter(t => t.name.toLowerCase().includes(templateSearch.toLowerCase())).map((t) => {
                   const isExp = expandedTemplates[t.id] === true;
@@ -478,7 +521,24 @@ const ModerationToolGermany = () => {
                                   <input type="text" placeholder="NAME" value={getInputsForTemplate(t.id).name || ''} onChange={(e) => updateInput(t.id, 'name', e.target.value)} className={`w-full px-3 py-2 text-sm border rounded ${darkMode ? 'bg-slate-800 border-slate-700 text-slate-200 placeholder-slate-500' : 'bg-white border-slate-300'}`} />
                                   <input type="text" placeholder="TOPIC_URL" value={getInputsForTemplate(t.id).topicUrl || ''} onChange={(e) => updateInput(t.id, 'topicUrl', e.target.value)} className={`w-full px-3 py-2 text-sm border rounded ${darkMode ? 'bg-slate-800 border-slate-700 text-slate-200 placeholder-slate-500' : 'bg-white border-slate-300'}`} />
                                   <input type="text" placeholder="TOPIC" value={getInputsForTemplate(t.id).topic || ''} onChange={(e) => updateInput(t.id, 'topic', e.target.value)} className={`w-full px-3 py-2 text-sm border rounded ${darkMode ? 'bg-slate-800 border-slate-700 text-slate-200 placeholder-slate-500' : 'bg-white border-slate-300'}`} />
-                                  <textarea placeholder="Zitiere_als_Text_den_entsprechenden_Grundsatz" value={getInputsForTemplate(t.id).grundsatz || ''} onChange={(e) => updateInput(t.id, 'grundsatz', e.target.value)} rows={3} className={`w-full px-3 py-2 text-sm border rounded ${darkMode ? 'bg-slate-800 border-slate-700 text-slate-200 placeholder-slate-500' : 'bg-white border-slate-300'}`} />
+                                  <select
+                                    value={customGrundsatz[t.id] ? '__custom__' : (grundsatzOptions.some(o => o.value === getInputsForTemplate(t.id).grundsatz) ? getInputsForTemplate(t.id).grundsatz : (getInputsForTemplate(t.id).grundsatz ? '__custom__' : ''))}
+                                    onChange={(e) => {
+                                      if (e.target.value === '__custom__') {
+                                        setCustomGrundsatz(prev => ({ ...prev, [t.id]: true }));
+                                        updateInput(t.id, 'grundsatz', '');
+                                      } else {
+                                        setCustomGrundsatz(prev => ({ ...prev, [t.id]: false }));
+                                        updateInput(t.id, 'grundsatz', e.target.value);
+                                      }
+                                    }}
+                                    className={`w-full px-3 py-2 text-sm border rounded ${darkMode ? 'bg-slate-800 border-slate-700 text-slate-200' : 'bg-white border-slate-300'}`}
+                                  >
+                                    {grundsatzOptions.map(o => <option key={o.value} value={o.value}>{o.label}</option>)}
+                                  </select>
+                                  {(customGrundsatz[t.id] || (!grundsatzOptions.some(o => o.value === getInputsForTemplate(t.id).grundsatz) && getInputsForTemplate(t.id).grundsatz)) && (
+                                    <textarea placeholder="Enter custom guideline text..." value={getInputsForTemplate(t.id).grundsatz || ''} onChange={(e) => updateInput(t.id, 'grundsatz', e.target.value)} rows={3} className={`w-full px-3 py-2 text-sm border rounded ${darkMode ? 'bg-slate-800 border-slate-700 text-slate-200 placeholder-slate-500' : 'bg-white border-slate-300'}`} />
+                                  )}
                                   <textarea placeholder="BEITRAG_EINFUEGEN" value={getInputsForTemplate(t.id).beitrag || ''} onChange={(e) => updateInput(t.id, 'beitrag', e.target.value)} rows={3} className={`w-full px-3 py-2 text-sm border rounded ${darkMode ? 'bg-slate-800 border-slate-700 text-slate-200 placeholder-slate-500' : 'bg-white border-slate-300'}`} />
                                 </>
                               )}
@@ -515,7 +575,24 @@ const ModerationToolGermany = () => {
                   </div>
                   <div className="space-y-2">
                     <input type="text" placeholder="Link to post" value={n.data.link ?? ''} onChange={(e) => updateAdminNote(n.id, 'link', e.target.value)} className={`w-full px-3 py-2 text-sm border rounded ${darkMode ? 'bg-slate-900 border-slate-700 text-slate-200 placeholder-slate-500' : 'bg-white border-slate-300'}`} />
-                    <input type="text" placeholder="Rule violation" value={n.data.violation ?? ''} onChange={(e) => updateAdminNote(n.id, 'violation', e.target.value)} className={`w-full px-3 py-2 text-sm border rounded ${darkMode ? 'bg-slate-900 border-slate-700 text-slate-200 placeholder-slate-500' : 'bg-white border-slate-300'}`} />
+                    <select
+                      value={customViolation[n.id] ? '__custom__' : (violationOptions.some(o => o.value === n.data.violation) ? n.data.violation : '__custom__')}
+                      onChange={(e) => {
+                        if (e.target.value === '__custom__') {
+                          setCustomViolation(prev => ({ ...prev, [n.id]: true }));
+                          updateAdminNote(n.id, 'violation', '');
+                        } else {
+                          setCustomViolation(prev => ({ ...prev, [n.id]: false }));
+                          updateAdminNote(n.id, 'violation', e.target.value);
+                        }
+                      }}
+                      className={`w-full px-3 py-2 text-sm border rounded ${darkMode ? 'bg-slate-900 border-slate-700 text-slate-200' : 'bg-white border-slate-300'}`}
+                    >
+                      {violationOptions.map(o => <option key={o.value} value={o.value}>{o.label}</option>)}
+                    </select>
+                    {(customViolation[n.id] || (!violationOptions.some(o => o.value === n.data.violation) && n.data.violation !== '')) && (
+                      <input type="text" placeholder="Enter custom violation..." value={n.data.violation ?? ''} onChange={(e) => updateAdminNote(n.id, 'violation', e.target.value)} className={`w-full px-3 py-2 text-sm border rounded ${darkMode ? 'bg-slate-900 border-slate-700 text-slate-200 placeholder-slate-500' : 'bg-white border-slate-300'}`} />
+                    )}
                     <div className={`rounded-lg p-3 border ${darkMode ? 'bg-slate-900 border-slate-700' : 'bg-slate-50 border-slate-200'}`}><pre className={`text-xs whitespace-pre-wrap font-mono ${text2}`}>{getAdminNote(n.id)}</pre></div>
                   </div>
                 </div>
