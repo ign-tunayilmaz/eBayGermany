@@ -1,10 +1,11 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { ChevronDown, Copy, Check, Sun, Moon, Pencil, X } from 'lucide-react';
 
 const ModerationToolGermany = () => {
   const [copiedId, setCopiedId] = useState<string | null>(null);
   const [expandedTemplates, setExpandedTemplates] = useState<Record<string, boolean>>({});
   const [showSection, setShowSection] = useState({ templates: false, ban: false, admin: false });
+  const adminSectionRef = useRef<HTMLDivElement>(null);
   const [darkMode, setDarkMode] = useState(false);
   const [templateSearch, setTemplateSearch] = useState('');
   const [notepad, setNotepad] = useState('');
@@ -273,11 +274,11 @@ const ModerationToolGermany = () => {
     const i = (templateInputs as Record<string, Record<string, string>>)[templateId] || {};
     if (templateId === 'removePost') {
       setAdminNoteInputs(prev => ({ ...prev, removed: { link: i.topicUrl || prev.removed.link, violation: i.grundsatz || '' } }));
-      alert('Copied to Removed Post admin notes!');
     } else if (templateId === 'editPost') {
       setAdminNoteInputs(prev => ({ ...prev, edited: { link: i.topicUrl || prev.edited.link, violation: i.grundsatz || '' } }));
-      alert('Copied to Edited Post admin notes!');
     }
+    setShowSection(prev => ({ ...prev, admin: true }));
+    setTimeout(() => adminSectionRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' }), 100);
   };
 
   const startEditing = (templateId: string, currentContent: string) => {
@@ -601,7 +602,7 @@ const ModerationToolGermany = () => {
             );
           }}
         ].map(s => (
-          <div key={s.key} className={`${card} rounded-lg shadow p-4 mb-6 border ${border}`}>
+          <div key={s.key} ref={s.key === 'admin' ? adminSectionRef : undefined} className={`${card} rounded-lg shadow p-4 mb-6 border ${border}`}>
             <button onClick={() => setShowSection({...showSection, [s.key]: !showSection[s.key as keyof typeof showSection]})} className="w-full flex items-center justify-between mb-3">
               <h3 className={`font-semibold ${text1}`}>{s.title}</h3>
               <div className="flex items-center gap-2">
