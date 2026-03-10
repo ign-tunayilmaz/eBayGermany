@@ -636,7 +636,7 @@ const ModerationToolGermany = () => {
         {/* Footer */}
         <div className={`rounded-lg shadow p-4 text-center text-sm ${card} ${text2} border ${border}`}>
           <p>Contact: <a href="mailto:tuna.yilmaz@ignitetech.com" className="text-yellow-500 underline">tuna.yilmaz@ignitetech.com</a></p>
-          <p className="mt-2 text-xs">Version 1.0.0 - eBay Deutschland 🇩🇪</p>
+          <p className="mt-2 text-xs">Version 1.1.0 - eBay Deutschland 🇩🇪</p>
         </div>
 
       </div>
