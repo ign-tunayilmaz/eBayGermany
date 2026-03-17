@@ -21,6 +21,8 @@ const ModerationToolGermany = () => {
   const [templateInputs, setTemplateInputs] = useState({
     removePost: { name: '', topicUrl: '', topic: '', grundsatz: '', beitrag: '' },
     editPost: { name: '', topicUrl: '', topic: '', grundsatz: '', beitrag: '' },
+    warningPhase1: { name: '' },
+    warningPhase2: { name: '', grundsatz: '', beitrag: '' },
     csRedirect: { username: '' },
     banCombined: { banPeriod: '1 Day', reasoning: '', username: '', email: '', ip: '', spamUrl: '', startDate: '' }
   });
@@ -35,6 +37,8 @@ const ModerationToolGermany = () => {
   const defaultTemplateInputs = {
     removePost: { name: '', topicUrl: '', topic: '', grundsatz: '', beitrag: '' },
     editPost: { name: '', topicUrl: '', topic: '', grundsatz: '', beitrag: '' },
+    warningPhase1: { name: '' },
+    warningPhase2: { name: '', grundsatz: '', beitrag: '' },
     csRedirect: { username: '' },
     banCombined: { banPeriod: '1 Day', reasoning: '', username: '', email: '', ip: '', spamUrl: '', startDate: '' }
   };
@@ -67,6 +71,8 @@ const ModerationToolGermany = () => {
           ...parsed,
           removePost: { ...defaultTemplateInputs.removePost, ...parsed?.removePost },
           editPost: { ...defaultTemplateInputs.editPost, ...parsed?.editPost },
+          warningPhase1: { ...defaultTemplateInputs.warningPhase1, ...parsed?.warningPhase1 },
+          warningPhase2: { ...defaultTemplateInputs.warningPhase2, ...parsed?.warningPhase2 },
           csRedirect: { ...defaultTemplateInputs.csRedirect, ...parsed?.csRedirect },
           banCombined: { ...defaultTemplateInputs.banCombined, ...parsed?.banCombined }
         });
@@ -94,6 +100,8 @@ const ModerationToolGermany = () => {
   const templates: Record<string, string> = {
     removePost: `<p> Hallo [NAME],<br /><br /> wir möchten Dich darüber informieren, dass Dein Beitrag: <a href="[TOPIC_URL]">[TOPIC]</a>, von uns entfernt wurde, da dieser gegen unsere <a href="https://community.ebay.de/t5/Community-Schwarzes-Brett/Unsere-neue-Community-Netiquette/ba-p/4604443"> unsere neue Community-Netiquette </a> verstößt.<br /><br /> Bei der Veröffentlichung von Beiträgen und Inhalten auf eBay ist insbesondere untersagt:<br /> [Zitiere_als_Text_den_entsprechenden_Grundsatz]<br /><br /> [BEITRAG_EINFUEGEN] </p> <br> <p> Du kannst die vollständigen Community Richtlinien jederzeit hier finden: </p> <p> <a href="https://www.ebay.de/help/policies/member-behavior-policies/grundsatz-zur-verffentlichung-von-beitrgen-und-inhalten-der-ebaycommunity?id=4265#section1"> Grundsatz zu Beiträgen und Inhalten/Policies </a> </p> <p> <a href="https://www.ebay.de/help/policies/member-behavior-policies/grundsatz-zur-verffentlichung-von-beitrgen-und-inhalten-der-ebaycommunity?id=4265#section3"> Grundsatz zur Veröffentlichung von Beiträgen </a> </p> <p> <br /> Du kannst gerne einen überarbeiteten Beitrag erstellen. Deine Beiträge sind für eBay und die anderen Mitglieder des Forums wichtig.<br /><br /> <br> <p> Für Rückfragen oder zur Klärung der Moderationsentscheidung kontaktiere bitte contactcommunity@ebay.com. </p> Mit freundlichen Grüßen<br /><br /> </p>`,
     editPost: `<p>Hallo [NAME],</p> <br> <p>wir möchten Dich darüber informieren, dass Dein Beitrag: <a href="[TOPIC_URL]">[TOPIC]</a>, von uns bearbeitet wurde, da dieser gegen unsere <a href="https://community.ebay.de/t5/Community-Schwarzes-Brett/Unsere-neue-Community-Netiquette/ba-p/4604443">unsere neue Community-Netiquette</a> verstößt. <br>Bei der Veröffentlichung von Beiträgen und Inhalten auf eBay ist insbesondere untersagt:</p> <p>[Zitiere_als_Text_den_entsprechenden_Grundsatz]</p> <br> <p>[BEITRAG_EINFUEGEN]</p> <br> <p>Du kannst die vollständigen Community Richtlinien jederzeit hier finden:</p> <p><a href="https://www.ebay.de/help/policies/member-behavior-policies/grundsatz-zur-verffentlichung-von-beitrgen-und-inhalten-der-ebaycommunity?id=4265#section1">Grundsatz zu Beiträgen und Inhalten/Policies&nbsp; </a></p> <p><a href="https://www.ebay.de/help/policies/member-behavior-policies/grundsatz-zur-verffentlichung-von-beitrgen-und-inhalten-der-ebaycommunity?id=4265#section3">Grundsatz zur Veröffentlichung von Beiträgen&nbsp; </a></p> <br> <p>Unsere Grundsätze sollen sicherstellen, dass alle Mitglieder unser Forum erfolgreich nutzen können. Wir freuen uns über Deine Mitwirkung.</p> <br> <p> Für Rückfragen oder zur Klärung der Moderationsentscheidung kontaktiere bitte contactcommunity@ebay.com. </p> <br> <p>Mit freundlichen Grüßen</p>`,
+    warningPhase1: `<p>Hallo [NAME],<br /><br />wir m&ouml;chten Dich daran erinnern und hiermit verwarnen, dass ein Versto&szlig; gegen unsere <a href="http://pages.ebay.de/help/policies/member-created-content-ov.html"> eBay-Grunds&auml;tze</a> zu folgenden Konsequenzen f&uuml;hren kann:<br /><br />&bull; L&ouml;schung einzelner oder aller Beitr&auml;ge eines eBay-Mitglieds in der eBay-Community<br />&bull; Einschr&auml;nkung der Nutzung der eBay-Community (z.B. Schreiben, Kudos vergabe usw.)<br />&bull; Vorl&auml;ufiger oder endg&uuml;ltiger Ausschluss von der eBay-Community</p><p>Beitr&auml;ge oder Inhalte mit Verst&ouml;&szlig;en k&ouml;nnen bearbeitet oder entfernt werden. eBay beh&auml;lt sich das Recht vor, den Zugang von Nutzer*innen zur Community wegen Verst&ouml;&szlig;en gegen die Community-Richtlinien einzuschr&auml;nken oder zu sperren.</p><p class="p1"><span class="s1">Du kannst die vollst&auml;ndigen Community Richtlinien jederzeit hier finden: </span></p><p class="p2"><span class="s2"><a href="https://www.ebay.de/help/policies/member-behavior-policies/grundsatz-zur-verffentlichung-von-beitrgen-und-inhalten-der-ebaycommunity?id=4265#section1">Grundsatz zu Beitr&auml;gen und Inhalten/ Policies</a></span></p><p class="p2"><span class="s2"><a href="https://www.ebay.de/help/policies/member-behavior-policies/grundsatz-zur-verffentlichung-von-beitrgen-und-inhalten-der-ebaycommunity?id=4265#section3">Grundsatz zur Ver&ouml;ffentlichung von Beitr&auml;gen&nbsp;</a></span></p><p><br />Solltest Du unseren Grunds&auml;tzen weiterhin nicht folgen, wird entsprechend der aufgef&uuml;hrten Konsequenzen gehandelt.<br /><br />Gru&szlig;<br /><br /></p>`,
+    warningPhase2: `<p>Hallo [NAME],<br /><br />wir m&ouml;chten Dich erneut daran erinnern und zum letzten Mal verwarnen, dass ein Versto&szlig; gegen unsere <a href="http://pages.ebay.de/help/policies/member-created-content-ov.html"> eBay-Grunds&auml;tze</a> zu folgenden Konsequenzen f&uuml;hren kann:<br /><br />&bull; L&ouml;schung einzelner oder aller Beitr&auml;ge eines eBay-Mitglieds in der eBay-Community <br />&bull; Einschr&auml;nkung der Nutzung der eBay-Community (z.B. Schreiben, Kudos vergabe usw.) <br />&bull; Vorl&auml;ufiger oder endg&uuml;ltiger Ausschluss von der eBay-Community</p><p>[Zitiere_als_Text_den_entsprechenden_Grundsatz]</p><p>[BEITRAG_EINFUEGEN]</p><p>&nbsp;</p><p class="p1"><span class="s1">Unsere vollst&auml;ndigen Community Richtlinien sind jederzeit hier zu finden: </span></p><p class="p2"><span class="s2"><a href="https://www.ebay.de/help/policies/member-behavior-policies/grundsatz-zur-verffentlichung-von-beitrgen-und-inhalten-der-ebaycommunity?id=4265#section1">Grundsatz zu Beitr&auml;gen und Inhalten/ Policies</a></span></p><p class="p2"><span class="s2"><a href="https://www.ebay.de/help/policies/member-behavior-policies/grundsatz-zur-verffentlichung-von-beitrgen-und-inhalten-der-ebaycommunity?id=4265#section3">Grundsatz zur Ver&ouml;ffentlichung von Beitr&auml;gen&nbsp;</a></span></p><p>Bei einem wiederholten Versto&szlig; gegen unseren Grundsatz, wird entsprechend der aufgef&uuml;hrten Konsequenzen gehandelt. Eine weitere Verwarnung wird nicht stattfinden.<br /><br />Gru&szlig;</p>`,
     necroThread: 'Hallo zusammen,\n \nAufgrund des Alters dieses Threads wurde er für weitere Antworten geschlossen. Du kannst gerne einen neuen Thread starten, wenn du dieses Thema weiter diskutieren möchtest.\n \nVielen Dank für dein Verständnis.',
     opRequest: 'Hallo zusammen,\n \nDieser Thread wurde auf Wunsch des ursprünglichen Verfassers geschlossen.\n \nVielen Dank für dein Verständnis.',
     lockingOffTopic: 'Hallo zusammen,\n \nWir schätzen eure Beteiligung an dieser Diskussion. Allerdings hat sich das Gespräch vom Thema entfernt und ist etwas hitzig geworden. Um die Community für alle Mitglieder einladend und konstruktiv zu halten, sperren wir diesen Thread für weitere Antworten.\n \nBitte denkt daran, zukünftige Diskussionen gemäß unseren Community-Richtlinien respektvoll und themenrelevant zu halten.\n \nVielen Dank für euer Verständnis und dafür, dass ihr uns helft, die Foren freundlich und produktiv zu halten.\n \n— Das eBay Community-Team',
@@ -166,6 +174,8 @@ const ModerationToolGermany = () => {
   const templateList: TemplateItem[] = [
     { id: 'removePost', name: 'Remove Post', content: templates.removePost, isDynamic: true, type: 'removePost' },
     { id: 'editPost', name: 'Edit Post', content: templates.editPost, isDynamic: true, type: 'removePost' },
+    { id: 'warningPhase1', name: 'First Warning', content: templates.warningPhase1, isDynamic: true, type: 'warningPhase1' },
+    { id: 'warningPhase2', name: 'Second (Final) Warning', content: templates.warningPhase2, isDynamic: true, type: 'warningPhase2' },
     ...(['gg01','gg05','sg02','sg04','sg05','sg08','sg09','sg10','sg11','gg02','gg03','gg04','sg00','sg01','sg03','sg06','sg07','sg12'] as const).map(id => ({ id, name: id.toUpperCase() + ': ' + templates[id].substring(0, 30), content: templates[id] }))
   ];
 
@@ -199,6 +209,8 @@ const ModerationToolGermany = () => {
     const defaults: Record<string, Record<string, string>> = {
       removePost: { name: '', topicUrl: '', topic: '', grundsatz: '', beitrag: '' },
       editPost: { name: '', topicUrl: '', topic: '', grundsatz: '', beitrag: '' },
+      warningPhase1: { name: '' },
+      warningPhase2: { name: '', grundsatz: '', beitrag: '' },
       csRedirect: { username: '' },
       banCombined: { banPeriod: '1 Day', reasoning: '', username: '', email: '', ip: '', spamUrl: '', startDate: '' }
     };
@@ -217,6 +229,15 @@ const ModerationToolGermany = () => {
         .replace('[NAME]', i.name || '[NAME]')
         .replace(/\[TOPIC_URL\]/g, i.topicUrl || '[TOPIC_URL]')
         .replace('[TOPIC]', i.topic || '[TOPIC]')
+        .replace('[Zitiere_als_Text_den_entsprechenden_Grundsatz]', i.grundsatz || '[Zitiere_als_Text_den_entsprechenden_Grundsatz]')
+        .replace('[BEITRAG_EINFUEGEN]', i.beitrag || '[BEITRAG_EINFUEGEN]');
+    } else if (templateId === 'warningPhase1') {
+      const baseContent = customTemplates[templateId] ?? templates[templateId];
+      p = baseContent.replace('[NAME]', i.name || '[NAME]');
+    } else if (templateId === 'warningPhase2') {
+      const baseContent = customTemplates[templateId] ?? templates[templateId];
+      p = baseContent
+        .replace('[NAME]', i.name || '[NAME]')
         .replace('[Zitiere_als_Text_den_entsprechenden_Grundsatz]', i.grundsatz || '[Zitiere_als_Text_den_entsprechenden_Grundsatz]')
         .replace('[BEITRAG_EINFUEGEN]', i.beitrag || '[BEITRAG_EINFUEGEN]');
     } else if (templateId === 'csRedirect') {
@@ -340,7 +361,7 @@ const ModerationToolGermany = () => {
   const border = darkMode ? 'border-slate-700' : 'border-slate-200';
 
   return (
-    <div className={bg}>
+    <div className={bg} translate="no">
       <div className="max-w-5xl mx-auto">
 
         {/* Header */}
@@ -532,6 +553,35 @@ const ModerationToolGermany = () => {
                                     <textarea placeholder="Enter custom guideline text..." value={getInputsForTemplate(t.id).grundsatz || ''} onChange={(e) => updateInput(t.id, 'grundsatz', e.target.value)} rows={3} className={`w-full px-3 py-2 text-sm border rounded ${darkMode ? 'bg-slate-800 border-slate-700 text-slate-200 placeholder-slate-500' : 'bg-white border-slate-300'}`} />
                                   )}
                                   <textarea placeholder="BEITRAG_EINFUEGEN" value={getInputsForTemplate(t.id).beitrag || ''} onChange={(e) => updateInput(t.id, 'beitrag', e.target.value)} rows={3} className={`w-full px-3 py-2 text-sm border rounded ${darkMode ? 'bg-slate-800 border-slate-700 text-slate-200 placeholder-slate-500' : 'bg-white border-slate-300'}`} />
+                                </>
+                              )}
+                              {t.type === 'warningPhase1' && (
+                                <>
+                                  <input type="text" placeholder="NAME (Mitgliedsname)" value={getInputsForTemplate(t.id).name || ''} onChange={(e) => updateInput(t.id, 'name', e.target.value)} className={`w-full px-3 py-2 text-sm border rounded ${darkMode ? 'bg-slate-800 border-slate-700 text-slate-200 placeholder-slate-500' : 'bg-white border-slate-300'}`} />
+                                </>
+                              )}
+                              {t.type === 'warningPhase2' && (
+                                <>
+                                  <input type="text" placeholder="NAME (Mitgliedsname)" value={getInputsForTemplate(t.id).name || ''} onChange={(e) => updateInput(t.id, 'name', e.target.value)} className={`w-full px-3 py-2 text-sm border rounded ${darkMode ? 'bg-slate-800 border-slate-700 text-slate-200 placeholder-slate-500' : 'bg-white border-slate-300'}`} />
+                                  <select
+                                    value={customGrundsatz[t.id] ? '__custom__' : (grundsatzOptions.some(o => o.value === getInputsForTemplate(t.id).grundsatz) ? getInputsForTemplate(t.id).grundsatz : (getInputsForTemplate(t.id).grundsatz ? '__custom__' : ''))}
+                                    onChange={(e) => {
+                                      if (e.target.value === '__custom__') {
+                                        setCustomGrundsatz(prev => ({ ...prev, [t.id]: true }));
+                                        updateInput(t.id, 'grundsatz', '');
+                                      } else {
+                                        setCustomGrundsatz(prev => ({ ...prev, [t.id]: false }));
+                                        updateInput(t.id, 'grundsatz', e.target.value);
+                                      }
+                                    }}
+                                    className={`w-full px-3 py-2 text-sm border rounded ${darkMode ? 'bg-slate-800 border-slate-700 text-slate-200' : 'bg-white border-slate-300'}`}
+                                  >
+                                    {grundsatzOptions.map(o => <option key={o.value} value={o.value}>{o.label}</option>)}
+                                  </select>
+                                  {(customGrundsatz[t.id] || (!grundsatzOptions.some(o => o.value === getInputsForTemplate(t.id).grundsatz) && getInputsForTemplate(t.id).grundsatz)) && (
+                                    <textarea placeholder="Enter custom guideline text..." value={getInputsForTemplate(t.id).grundsatz || ''} onChange={(e) => updateInput(t.id, 'grundsatz', e.target.value)} rows={3} className={`w-full px-3 py-2 text-sm border rounded ${darkMode ? 'bg-slate-800 border-slate-700 text-slate-200 placeholder-slate-500' : 'bg-white border-slate-300'}`} />
+                                  )}
+                                  <textarea placeholder="BEITRAG EINFUEGEN" value={getInputsForTemplate(t.id).beitrag || ''} onChange={(e) => updateInput(t.id, 'beitrag', e.target.value)} rows={3} className={`w-full px-3 py-2 text-sm border rounded ${darkMode ? 'bg-slate-800 border-slate-700 text-slate-200 placeholder-slate-500' : 'bg-white border-slate-300'}`} />
                                 </>
                               )}
                               {t.type === 'username' && (
